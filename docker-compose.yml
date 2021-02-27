@@ -23,6 +23,8 @@ services:
             APP_DEBUG: 1
             APP_ENV: dev
             PHP_IDE_CONFIG: serverName=API
+        env_file:
+            -   app/.env.local
 
     app-php-cli:
         build:
@@ -33,3 +35,5 @@ services:
         environment:
             APP_DEBUG: 1
             APP_ENV: dev
+        env_file:
+            -   app/.env.local
