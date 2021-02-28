@@ -1,0 +1,32 @@
+{
+  "data": {
+    "update_id": 310636509,
+    "message": {
+      "message_id": 7,
+      "from": {
+        "id": 233575306,
+        "is_bot": false,
+        "first_name": "Ivan",
+        "last_name": "Ivanov",
+        "username": "Ivan",
+        "language_code": "ru"
+      },
+      "chat": {
+        "id": 233575306,
+        "first_name": "Ivan",
+        "last_name": "Ivanov",
+        "username": "Ivan",
+        "type": "private"
+      },
+      "date": 1614538680,
+      "text": "/start",
+      "entities": [
+        {
+          "offset": 0,
+          "length": 6,
+          "type": "bot_command"
+        }
+      ]
+    }
+  }
+}
