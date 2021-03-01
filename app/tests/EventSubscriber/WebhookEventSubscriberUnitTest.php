@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Tests\EventSubscriber;
 
-use App\Controller\WebhookController;
 use App\EventSubscriber\WebhookEventSubscriber;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Validator\Validation;
 
 class WebhookEventSubscriberUnitTest extends TestCase
 {
-    public function testOnKernelControllerArguments(): void
+    public function testOnKernelControllerArgumentsSuccess(): void
     {
-        $logger     = $this->createMock(LoggerInterface::class);
-        $subscriber = new WebhookEventSubscriber($logger);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $subscriber = new WebhookEventSubscriber(Validation::createValidator(), $logger);
 
         $event = self::createEvent();
 

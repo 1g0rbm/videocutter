@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Message;
 
-class Input
+class Data
 {
     private int $updateId;
 
