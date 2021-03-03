@@ -44,7 +44,43 @@ class WebhookEventSubscriber implements EventSubscriberInterface
                 'data' => new Assert\Collection(
                     [
                         'update_id' => new Assert\Type('integer'),
-                        'message' => new Assert\Type('array'),
+                        'message' => new Assert\Collection(
+                            [
+                                'message_id' => new Assert\Type('integer'),
+                                'from' => new Assert\Collection(
+                                    [
+                                        'id' => new Assert\Type('int'),
+                                        'is_bot' => new Assert\Type('boolean'),
+                                        'first_name' => new Assert\Type('string'),
+                                        'last_name' => new Assert\Type('string'),
+                                        'username' => new Assert\Type('string'),
+                                        'language_code' => new Assert\Type('string'),
+                                    ]
+                                ),
+                                'chat' => new Assert\Collection(
+                                    [
+                                        'id' => new Assert\Type('int'),
+                                        'first_name' => new Assert\Type('string'),
+                                        'last_name' => new Assert\Type('string'),
+                                        'username' => new Assert\Type('string'),
+                                        'type' => new Assert\Type('string'),
+                                    ]
+                                ),
+                                'date' => new Assert\Type('int'),
+                                'text' => new Assert\Type('string'),
+                                'entities' => new Assert\Collection(
+                                    [
+                                        new Assert\Collection(
+                                            [
+                                                'offset' => new Assert\Type('int'),
+                                                'length' => new Assert\Type('int'),
+                                                'type' => new Assert\Type('string'),
+                                            ]
+                                        ),
+                                    ]
+                                ),
+                            ]
+                        ),
                     ]
                 ),
             ]
