@@ -10,10 +10,14 @@ class Data
 
     private Message $message;
 
-    public function __construct(int $updateId, Message $message)
+    public static function createFromArray(array $arr): self
     {
-        $this->updateId = $updateId;
-        $this->message  = $message;
+        $obj = new self();
+
+        $obj->updateId = $arr['update_id'];
+        $obj->message  = Message::createFromArray($arr['message']);
+
+        return $obj;
     }
 
     public function getMessage(): Message

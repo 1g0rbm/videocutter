@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Dto\Request\Webhook;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Message\Data;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use function json_decode;
@@ -39,7 +40,24 @@ class WebhookEventSubscriber implements EventSubscriberInterface
     {
         $data = json_decode($event->getRequest()->getContent(), true);
 
-        $constraint = new Assert\Collection(
+        $errors = $this->validator->validate($data, [self::getConstraints()]);
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($data, $errors);
+        }
+
+        $this->logger->info('[TG-WEBHOOK] request data: ', ['data' => $data]);
+
+        $event->setArguments(
+            [
+                ...$event->getArguments(),
+                new Webhook(Data::createFromArray($data['data'])),
+            ]
+        );
+    }
+
+    private static function getConstraints(): Assert\Collection
+    {
+        return new Assert\Collection(
             [
                 'data' => new Assert\Collection(
                     [
@@ -85,14 +103,5 @@ class WebhookEventSubscriber implements EventSubscriberInterface
                 ),
             ]
         );
-
-        $errors = $this->validator->validate($data, [$constraint]);
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($data, $errors);
-        }
-
-        $this->logger->info('[TG-WEBHOOK] request data', ['data' => $data]);
-
-        $event->setArguments([...$event->getArguments(), new Webhook($data)]);
     }
 }
