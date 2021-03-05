@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Dto\Request;
 
 use App\Entity\Message\Data;
+use App\Exception\Dto\Request\WebhookRequestException;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use function json_decode;
 
@@ -20,6 +22,15 @@ class Webhook implements RequestDtoInterface
      */
     public function __construct(Request $request)
     {
-        $this->data = Data::createFromArray(json_decode($request->getContent(), true));
+        try {
+            $this->data = Data::createFromArray(json_decode($request->getContent(), true));
+        } catch (InvalidArgumentException $e) {
+            throw WebhookRequestException::create($e->getMessage(), 400);
+        }
+    }
+
+    public function getMessageData(): Data
+    {
+        return $this->data;
     }
 }
