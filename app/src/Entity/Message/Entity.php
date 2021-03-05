@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity\Message;
 
+use Webmozart\Assert\Assert;
+
 class Entity
 {
     private int $offset;
@@ -14,6 +16,10 @@ class Entity
 
     public static function createFromArray(array $arr): self
     {
+        Assert::keyExists($arr, 'offset');
+        Assert::keyExists($arr, 'length');
+        Assert::keyExists($arr, 'type');
+
         $obj = new self();
 
         $obj->offset = $arr['offset'];

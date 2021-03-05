@@ -20,13 +20,14 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+            - '../src/Dto/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller/'
-        tags: ['controller.service_arguments']
+        tags: [ 'controller.service_arguments' ]
 
-    # events_subscriber
-    App\EventSubscribers\WebhookEventSubscriber:
-        tags: []
+    App\ArgumentResolver\RequestDtoResolver:
+        tags:
+            - { name: controller.request_value_resolver, priority: 50 }

@@ -6,6 +6,7 @@ namespace App\Entity\Message;
 
 use DateTimeImmutable;
 use Exception;
+use Webmozart\Assert\Assert;
 
 class Message
 {
@@ -32,6 +33,13 @@ class Message
      */
     public static function createFromArray(array $arr): self
     {
+        Assert::keyExists($arr, 'message_id');
+        Assert::keyExists($arr, 'from');
+        Assert::keyExists($arr, 'chat');
+        Assert::keyExists($arr, 'date');
+        Assert::keyExists($arr, 'text');
+        Assert::keyExists($arr, 'entities');
+
         $obj = new self();
 
         $obj->messageId = $arr['message_id'];

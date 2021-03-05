@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity\Message;
 
+use Webmozart\Assert\Assert;
+
 class Chat
 {
     private int $id;
@@ -18,6 +20,12 @@ class Chat
 
     public static function createFromArray(array $chat): self
     {
+        Assert::keyExists($chat, 'id');
+        Assert::keyExists($chat, 'first_name');
+        Assert::keyExists($chat, 'last_name');
+        Assert::keyExists($chat, 'username');
+        Assert::keyExists($chat, 'type');
+
         $obj = new self();
 
         $obj->id        = $chat['id'];

@@ -4,37 +4,22 @@ declare(strict_types=1);
 
 namespace App\Dto\Request;
 
-use App\Entity\Message\Chat;
 use App\Entity\Message\Data;
-use App\Entity\Message\From;
-use App\Entity\Message\Message;
+use Exception;
+use Symfony\Component\HttpFoundation\Request;
+use function json_decode;
 
-class Webhook
+class Webhook implements RequestDtoInterface
 {
     private Data $data;
 
-    public function __construct(Data $data)
+    /**
+     * @param Request $request
+     *
+     * @throws Exception
+     */
+    public function __construct(Request $request)
     {
-        $this->data = $data;
-    }
-
-    public function getData(): Data
-    {
-        return $this->data;
-    }
-
-    public function getMessage(): Message
-    {
-        return $this->data->getMessage();
-    }
-
-    public function getFrom(): From
-    {
-        return $this->data->getMessage()->getFrom();
-    }
-
-    public function getChat(): Chat
-    {
-        return $this->data->getMessage()->getChat();
+        $this->data = Data::createFromArray(json_decode($request->getContent(), true));
     }
 }
