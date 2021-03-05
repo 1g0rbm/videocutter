@@ -31,3 +31,7 @@ services:
     App\ArgumentResolver\RequestDtoResolver:
         tags:
             - { name: controller.request_value_resolver, priority: 50 }
+
+    App\EventSubscriber\ExceptionSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
