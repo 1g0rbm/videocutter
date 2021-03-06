@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Dto\Request\Webhook;
 use App\Entity\Message\Data;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class WebhookController extends AbstractController
 {
     /**
-     * @Route("/token", name="webhook_token", methods={"POST"})
-     * @param Request $request
-     * @param Webhook $requestDto
+     * @Route("/token/{token}", name="webhook_token", methods={"POST"})
+     * @param Request         $request
+     * @param Webhook         $requestDto
      *
      * @return JsonResponse
      */

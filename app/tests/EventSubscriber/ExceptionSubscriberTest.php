@@ -8,6 +8,7 @@ use App\EventSubscriber\ExceptionSubscriber;
 use App\Exception\Dto\Request\WebhookRequestException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -20,13 +21,15 @@ class ExceptionSubscriberTest extends TestCase
 
         self::assertNull($event->getResponse());
 
-        $subscriber = new ExceptionSubscriber();
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $subscriber = new ExceptionSubscriber($logger);
         $subscriber->onKernelException($event);
 
         $response = $event->getResponse();
 
         self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('"test"', $response->getContent());
+        self::assertEquals('"[WEBHOOK-TEST] test"', $response->getContent());
     }
 
     public function testOnKernelThrowable(): void
@@ -35,7 +38,9 @@ class ExceptionSubscriberTest extends TestCase
 
         self::assertNull($event->getResponse());
 
-        $subscriber = new ExceptionSubscriber();
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $subscriber = new ExceptionSubscriber($logger);
         $subscriber->onKernelException($event);
 
         $response = $event->getResponse();
@@ -57,7 +62,7 @@ class ExceptionSubscriberTest extends TestCase
     {
         $kernel  = self::createMock(HttpKernelInterface::class);
         $request = new Request();
-        $e       = WebhookRequestException::create('test', 400);
+        $e       = WebhookRequestException::create('webhook-test', 'test', 400);
 
         return new ExceptionEvent($kernel, $request, 1, $e);
     }

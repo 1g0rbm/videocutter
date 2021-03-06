@@ -6,6 +6,7 @@ namespace App\Tests\Webhook;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use function file_get_contents;
+use function sprintf;
 
 class TokenActionFunctionalTest extends WebTestCase
 {
@@ -14,7 +15,7 @@ class TokenActionFunctionalTest extends WebTestCase
         $client = static::createClient();
         $client->request(
             'POST',
-            '/webhook/token',
+            sprintf('/webhook/token/%s', getenv('TG_WEBHOOK_TOKEN')),
             [],
             [],
             [],
@@ -32,7 +33,7 @@ class TokenActionFunctionalTest extends WebTestCase
         $client = static::createClient();
         $client->request(
             'POST',
-            '/webhook/token',
+            sprintf('/webhook/token/%s', getenv('TG_WEBHOOK_TOKEN')),
             [],
             [],
             [],

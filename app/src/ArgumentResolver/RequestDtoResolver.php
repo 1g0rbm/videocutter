@@ -51,7 +51,7 @@ class RequestDtoResolver implements ArgumentValueResolverInterface
 
         $this->logger->info(
             '[REQUEST-CONTENT]',
-            ['content' => json_encode($request->getContent(), true)]
+            ['content' => json_decode($request->getContent(), true)]
         );
 
         $errors = $this->validator->validate($dto);
