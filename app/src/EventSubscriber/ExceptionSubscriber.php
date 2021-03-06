@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exception\TgAppExceptionInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -13,6 +14,13 @@ use Throwable;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -23,6 +31,11 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event): void
     {
         $e = $event->getThrowable();
+
+        $this->logger->error(
+            $e->getMessage(),
+            ['content' => json_decode($event->getRequest()->getContent(), true)]
+        );
 
         $response = self::createResponseFromThrowable($e);
         $response->headers->set('Content-Type', 'application/problem+json');

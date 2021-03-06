@@ -8,13 +8,15 @@ use Webmozart\Assert\Assert;
 
 class From
 {
+    private const DEFAULT_LANGUAGE = 'en';
+
     private int $id;
 
     private bool $isBot = false;
 
-    private string $firstName;
+    private ?string $firstName;
 
-    private string $lastName;
+    private ?string $lastName;
 
     private string $username;
 
@@ -24,19 +26,16 @@ class From
     {
         Assert::keyExists($from, 'id');
         Assert::keyExists($from, 'is_bot');
-        Assert::keyExists($from, 'first_name');
-        Assert::keyExists($from, 'last_name');
         Assert::keyExists($from, 'username');
-        Assert::keyExists($from, 'language_code');
 
         $obj = new self();
 
         $obj->id           = $from['id'];
         $obj->isBot        = (bool)$from['is_bot'];
-        $obj->firstName    = $from['first_name'];
-        $obj->lastName     = $from['last_name'];
+        $obj->firstName    = $from['first_name'] ?? null;
+        $obj->lastName     = $from['last_name'] ?? null;
         $obj->username     = $from['username'];
-        $obj->languageCode = $from['language_code'];
+        $obj->languageCode = $from['language_code'] ?? self::DEFAULT_LANGUAGE;
 
         return $obj;
     }
@@ -61,22 +60,22 @@ class From
         $this->isBot = $isBot;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }

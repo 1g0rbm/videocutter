@@ -25,7 +25,7 @@ class Webhook implements RequestDtoInterface
         try {
             $this->data = Data::createFromArray(json_decode($request->getContent(), true));
         } catch (InvalidArgumentException $e) {
-            throw WebhookRequestException::create($e->getMessage(), 400);
+            throw WebhookRequestException::create('webhook-token', $e->getMessage(), 400);
         }
     }
 

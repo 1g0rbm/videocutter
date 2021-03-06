@@ -8,7 +8,7 @@ use Throwable;
 
 interface TgAppExceptionInterface extends Throwable
 {
-    public static function create(string $message, int $code): self;
+    public static function create(string $label, string $message, int $code): self;
 
     public function getTelegramProblem(): TelegramProblem;
 }

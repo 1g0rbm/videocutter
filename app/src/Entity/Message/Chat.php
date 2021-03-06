@@ -10,9 +10,9 @@ class Chat
 {
     private int $id;
 
-    private string $firstName;
+    private ?string $firstName;
 
-    private string $lastName;
+    private ?string $lastName;
 
     private string $username;
 
@@ -21,16 +21,14 @@ class Chat
     public static function createFromArray(array $chat): self
     {
         Assert::keyExists($chat, 'id');
-        Assert::keyExists($chat, 'first_name');
-        Assert::keyExists($chat, 'last_name');
         Assert::keyExists($chat, 'username');
         Assert::keyExists($chat, 'type');
 
         $obj = new self();
 
         $obj->id        = $chat['id'];
-        $obj->firstName = $chat['first_name'];
-        $obj->lastName  = $chat['last_name'];
+        $obj->firstName = $chat['first_name'] ?? null;
+        $obj->lastName  = $chat['last_name'] ?? null;
         $obj->username  = $chat['username'];
         $obj->type      = $chat['type'];
 
@@ -47,22 +45,22 @@ class Chat
         $this->id = $id;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }
