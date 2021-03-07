@@ -38,7 +38,6 @@ class Message
         Assert::keyExists($arr, 'chat');
         Assert::keyExists($arr, 'date');
         Assert::keyExists($arr, 'text');
-        Assert::keyExists($arr, 'entities');
 
         $obj = new self();
 
@@ -50,7 +49,7 @@ class Message
         $obj->text     = $arr['text'];
         $obj->entities = array_map(
             static fn(array $arr): Entity => Entity::createFromArray($arr),
-            $arr['entities']
+            $arr['entities'] ?? []
         );
 
         return $obj;

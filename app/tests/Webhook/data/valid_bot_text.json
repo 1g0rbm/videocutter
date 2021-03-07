@@ -1,0 +1,23 @@
+{
+  "update_id": 310636526,
+  "message": {
+    "message_id": 24,
+    "from": {
+      "id": 233575306,
+      "is_bot": false,
+      "first_name": "Igor",
+      "last_name": "Markin",
+      "username": "Ig0rbm",
+      "language_code": "ru"
+    },
+    "chat": {
+      "id": 233575306,
+      "first_name": "Igor",
+      "last_name": "Markin",
+      "username": "Ig0rbm",
+      "type": "private"
+    },
+    "date": 1615110935,
+    "text": "test phrase"
+  }
+}

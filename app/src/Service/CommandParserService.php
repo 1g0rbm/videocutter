@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\BotCommand;
 use App\Entity\Message\Message;
 use function mb_substr;
+use function trim;
 
 class CommandParserService
 {
@@ -15,8 +16,17 @@ class CommandParserService
         $text = $message->getText();
 
         $commandStructure = [];
-        foreach ($message->getEntities() as $entity) {
-            $commandStructure[$entity->getType()] = mb_substr($text, $entity->getOffset(), $entity->getLength());
+        if (!empty($message->getEntities())) {
+            foreach ($message->getEntities() as $entity) {
+                if ($entity->getType() !== 'bot_command') {
+                    continue;
+                }
+
+                $commandStructure['command'] = mb_substr($text, $entity->getOffset(), $entity->getLength());
+                $commandStructure['text']    = trim(mb_substr($text, $entity->getOffset() + $entity->getLength()));
+            }
+        } else {
+            $commandStructure['text'] = $message->getText();
         }
 
         return BotCommand::create($commandStructure);

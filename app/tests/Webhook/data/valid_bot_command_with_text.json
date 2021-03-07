@@ -1,0 +1,30 @@
+{
+  "update_id": 310636525,
+  "message": {
+    "message_id": 23,
+    "from": {
+      "id": 233575306,
+      "is_bot": false,
+      "first_name": "Igor",
+      "last_name": "Markin",
+      "username": "Ig0rbm",
+      "language_code": "ru"
+    },
+    "chat": {
+      "id": 233575306,
+      "first_name": "Igor",
+      "last_name": "Markin",
+      "username": "Ig0rbm",
+      "type": "private"
+    },
+    "date": 1615109219,
+    "text": "/cut test word",
+    "entities": [
+      {
+        "offset": 0,
+        "length": 4,
+        "type": "bot_command"
+      }
+    ]
+  }
+}
