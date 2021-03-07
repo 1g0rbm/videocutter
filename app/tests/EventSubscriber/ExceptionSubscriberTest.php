@@ -29,7 +29,7 @@ class ExceptionSubscriberTest extends TestCase
         $response = $event->getResponse();
 
         self::assertEquals(400, $response->getStatusCode());
-        self::assertEquals('"[WEBHOOK-TEST] test"', $response->getContent());
+        self::assertEquals('"[WEBHOOK-TOKEN] test"', $response->getContent());
     }
 
     public function testOnKernelThrowable(): void
@@ -62,7 +62,7 @@ class ExceptionSubscriberTest extends TestCase
     {
         $kernel  = self::createMock(HttpKernelInterface::class);
         $request = new Request();
-        $e       = WebhookRequestException::create('webhook-test', 'test', 400);
+        $e       = WebhookRequestException::wrongContent('test');
 
         return new ExceptionEvent($kernel, $request, 1, $e);
     }

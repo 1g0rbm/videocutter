@@ -2,26 +2,13 @@
 
 namespace App\Exception\Dto\Request;
 
-use App\Exception\TelegramProblem;
 use App\Exception\TgAppExceptionInterface;
-use InvalidArgumentException;
-use function sprintf;
-use function mb_strtoupper;
+use App\Exception\TgProblemAbstractException;
 
-class WebhookRequestException extends InvalidArgumentException implements TgAppExceptionInterface
+class WebhookRequestException extends TgProblemAbstractException
 {
-    private TelegramProblem $problem;
-
-    public static function create(string $label, string $message, int $code): self
+    public static function wrongContent(string $message): TgAppExceptionInterface
     {
-        $e          = new self(sprintf('[%s] %s', mb_strtoupper($label), $message));
-        $e->problem = new TelegramProblem($e->getMessage(), $code);
-
-        return $e;
-    }
-
-    public function getTelegramProblem(): TelegramProblem
-    {
-        return $this->problem;
+        return static::create('webhook-token', $message, 400);
     }
 }

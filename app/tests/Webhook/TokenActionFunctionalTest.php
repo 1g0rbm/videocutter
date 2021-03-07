@@ -44,4 +44,21 @@ class TokenActionFunctionalTest extends WebTestCase
 
         self::assertEquals(400, $response->getStatusCode());
     }
+
+    public function testTokenReturn401(): void
+    {
+        $client = static::createClient();
+        $client->request(
+            'POST',
+            '/webhook/token/wrong_token',
+            [],
+            [],
+            [],
+            file_get_contents(__DIR__ . '/data/valid_bot_command_message.json')
+        );
+
+        $response = $client->getResponse();
+
+        self::assertEquals(401, $response->getStatusCode());
+    }
 }

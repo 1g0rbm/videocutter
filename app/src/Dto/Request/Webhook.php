@@ -6,6 +6,7 @@ namespace App\Dto\Request;
 
 use App\Entity\Message\Data;
 use App\Exception\Dto\Request\WebhookRequestException;
+use App\Exception\TgAppExceptionInterface;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,14 +19,14 @@ class Webhook implements RequestDtoInterface
     /**
      * @param Request $request
      *
-     * @throws Exception
+     * @throws Exception|TgAppExceptionInterface
      */
     public function __construct(Request $request)
     {
         try {
             $this->data = Data::createFromArray(json_decode($request->getContent(), true));
         } catch (InvalidArgumentException $e) {
-            throw WebhookRequestException::create('webhook-token', $e->getMessage(), 400);
+            throw WebhookRequestException::wrongContent($e->getMessage());
         }
     }
 
