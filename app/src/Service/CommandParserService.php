@@ -22,7 +22,7 @@ class CommandParserService
                     continue;
                 }
 
-                $commandStructure['command'] = mb_substr($text, $entity->getOffset(), $entity->getLength());
+                $commandStructure['command'] = trim(mb_substr($text, $entity->getOffset(), $entity->getLength()));
                 $commandStructure['text']    = trim(mb_substr($text, $entity->getOffset() + $entity->getLength()));
             }
         } else {
