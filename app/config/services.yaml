@@ -33,6 +33,11 @@ services:
         resource: '../src/BotAction/Action'
         tags: [ 'bot.action' ]
 
+    App\Service\TgBot\Api:
+        arguments:
+            $client: '@eight_points_guzzle.client.telegram-bot-api'
+            $token: '%env(TG_TOKEN)%'
+
     App\ArgumentResolver\RequestDtoResolver:
         tags:
             - { name: controller.request_value_resolver, priority: 50 }
