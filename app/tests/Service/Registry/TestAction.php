@@ -6,6 +6,7 @@ namespace App\Tests\Service\Registry;
 
 use App\BotAction\BotActionInterface;
 use App\Entity\Message\Data;
+use App\Entity\Message\Response;
 
 class TestAction implements BotActionInterface
 {
@@ -14,8 +15,8 @@ class TestAction implements BotActionInterface
         return '/test';
     }
 
-    public function run(Data $data)
+    public function run(Data $data): Response
     {
-        // TODO: Implement run() method.
+        return new Response(1, 'response text');
     }
 }

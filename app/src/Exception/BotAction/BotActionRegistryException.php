@@ -10,15 +10,6 @@ use function sprintf;
 
 class BotActionRegistryException extends TgProblemAbstractException
 {
-    public static function actionNotFoundByCommand(string $botCommand): TgAppExceptionInterface
-    {
-        return self::create(
-            'action_registry',
-            sprintf('Registry can not find action by command "%s"', $botCommand),
-            500
-        );
-    }
-
     public static function actionAlreadyExist(string $class): TgAppExceptionInterface
     {
         return self::create(

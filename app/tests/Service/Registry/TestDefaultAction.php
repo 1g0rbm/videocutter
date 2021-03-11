@@ -2,26 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\BotAction\Action;
+namespace App\Tests\Service\Registry;
 
 use App\BotAction\BotActionInterface;
 use App\Entity\Message\Data;
 use App\Entity\Message\Response;
 
-class CommandStart implements BotActionInterface
+class TestDefaultAction implements BotActionInterface
 {
-    public const NAME = '/start';
-
     public function getCommand(): string
     {
-        return self::NAME;
+        return '/no_command';
     }
 
     public function run(Data $data): Response
     {
-        return new Response(
-            $data->getMessage()->getChat()->getId(),
-            'start'
-        );
+        return new Response(1, 'response text');
     }
 }

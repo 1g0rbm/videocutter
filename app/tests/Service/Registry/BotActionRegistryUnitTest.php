@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Registry;
 
+use App\Exception\BotAction\ActionNotFoundException;
 use App\Exception\BotAction\BotActionRegistryException;
 use App\Exception\TgAppExceptionInterface;
 use App\Service\Registry\BotActionRegistry;
@@ -60,13 +61,29 @@ class BotActionRegistryUnitTest extends TestCase
     /**
      * @throws TgAppExceptionInterface
      */
+    public function testGetDefaultActionSuccess(): void
+    {
+        $registry = new BotActionRegistry();
+
+        $defaultAction = new TestDefaultAction();
+        $registry->addAction($defaultAction);
+
+        $action = new TestAction();
+        $registry->addAction($action);
+
+        self::assertEquals($defaultAction, $registry->get('/non-existent'));
+    }
+
+    /**
+     * @throws TgAppExceptionInterface
+     */
     public function testGetThrowNotFoundException(): void
     {
         $registry = new BotActionRegistry();
 
-        self::expectException(BotActionRegistryException::class);
+        self::expectException(ActionNotFoundException::class);
         self::expectExceptionCode(500);
-        self::expectExceptionMessage('[ACTION_REGISTRY] Registry can not find action by command "/undefined_command"');
+        self::expectExceptionMessage('[ACTION-REGISTRY] Registry can not find default action');
 
         $registry->get('/undefined_command');
     }

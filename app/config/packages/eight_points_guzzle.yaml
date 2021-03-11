@@ -1,4 +1,4 @@
 eight_points_guzzle:
     clients:
-        telegram-bot-api:
+        telegram_bot_api:
             base_url: '%env(TG_BOT_API_URL)%'

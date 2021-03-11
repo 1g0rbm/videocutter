@@ -35,7 +35,7 @@ services:
 
     App\Service\TgBot\Api:
         arguments:
-            $client: '@eight_points_guzzle.client.telegram-bot-api'
+            $client: '@eight_points_guzzle.client.telegram_bot_api'
             $token: '%env(TG_TOKEN)%'
 
     App\ArgumentResolver\RequestDtoResolver:

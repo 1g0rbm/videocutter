@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Registry;
 
 use App\BotAction\BotActionInterface;
+use App\Exception\BotAction\ActionNotFoundException;
 use App\Exception\BotAction\BotActionRegistryException;
 use App\Exception\TgAppExceptionInterface;
 
@@ -25,10 +26,23 @@ class BotActionRegistry
     public function get(string $botCommand): BotActionInterface
     {
         if (!isset($this->actions[$botCommand])) {
-            throw BotActionRegistryException::actionNotFoundByCommand($botCommand);
+            return $this->getDefaultCommand();
         }
 
         return $this->actions[$botCommand];
+    }
+
+    /**
+     * @return BotActionInterface
+     * @throws TgAppExceptionInterface
+     */
+    public function getDefaultCommand(): BotActionInterface
+    {
+        if (!isset($this->actions['/no_command'])) {
+            throw ActionNotFoundException::defaultCommand();
+        }
+
+        return $this->actions['/no_command'];
     }
 
     /**

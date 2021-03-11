@@ -38,7 +38,7 @@ class Response
             'chat_id' => $this->chatId,
             'text' => $this->text,
             'parse_mode' => $this->parseMode,
-            'reply_markup' => json_encode($this->replyMarkup),
+            'reply_markup' => $this->replyMarkup,
         ];
     }
 }

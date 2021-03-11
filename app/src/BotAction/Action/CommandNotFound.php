@@ -6,6 +6,7 @@ namespace App\BotAction\Action;
 
 use App\BotAction\BotActionInterface;
 use App\Entity\Message\Data;
+use App\Entity\Message\Response;
 
 class CommandNotFound implements BotActionInterface
 {
@@ -16,9 +17,11 @@ class CommandNotFound implements BotActionInterface
         return self::NAME;
     }
 
-    public function run(Data $data)
+    public function run(Data $data): Response
     {
-        dump($data);
-        die;
+        return new Response(
+            $data->getMessage()->getChat()->getId(),
+            'response text'
+        );
     }
 }

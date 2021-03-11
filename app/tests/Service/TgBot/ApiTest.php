@@ -51,7 +51,7 @@ class ApiTest extends TestCase
                     'chat_id' => 1,
                     'text' => 'response text',
                     'parse_mode' => 'markdown',
-                    'reply_markup' => json_encode([]),
+                    'reply_markup' => [],
                 ]
             ),
             $request->getBody()->getContents()
