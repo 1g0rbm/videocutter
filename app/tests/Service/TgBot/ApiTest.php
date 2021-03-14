@@ -61,6 +61,33 @@ class ApiTest extends TestCase
     /**
      * @throws GuzzleException
      */
+    public function testGetMeSuccess(): void
+    {
+        $historyContainer = [];
+        $api              = new Api(
+            $this->createClient(
+                $status = 200,
+                $body = 'content',
+                $historyContainer
+            ),
+            $tgToken = getenv('TG_TOKEN')
+        );
+
+        $response = $api->getMe();
+
+        self::assertEquals($body, $response);
+
+        /** @var Request $request */
+        $request = $historyContainer[0]['request'];
+
+        self::assertEquals('POST', $request->getMethod());
+        self::assertEquals(sprintf('/bot%s/getMe', $tgToken), $request->getUri());
+        self::assertEquals(http_build_query([]), $request->getBody()->getContents());
+    }
+
+    /**
+     * @throws GuzzleException
+     */
     public function testSendMessageError(): void
     {
         $historyContainer = [];

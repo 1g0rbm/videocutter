@@ -36,6 +36,19 @@ class Api implements TgSendMessageInterface
     }
 
     /**
+     * @return string
+     * @throws GuzzleException
+     */
+    public function getMe(): string
+    {
+        return $this->send(
+            'POST',
+            'getMe',
+            []
+        );
+    }
+
+    /**
      * @param string $httpMethod
      * @param string $telegramMethod
      * @param array  $formParams

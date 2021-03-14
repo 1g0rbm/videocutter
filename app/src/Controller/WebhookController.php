@@ -46,7 +46,11 @@ class WebhookController extends AbstractController
             ->get($botCommand->getCommand())
             ->run($data);
 
-        $tgApi->sendMessage($response);
+        if (getenv('APP_ENV') === 'test') {
+            $tgApi->getMe();
+        } else {
+            $tgApi->sendMessage($response);
+        }
 
         return new JsonResponse(['ok' => true]);
     }
