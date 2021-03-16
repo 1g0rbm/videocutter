@@ -20,10 +20,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class WebhookController extends AbstractController
 {
     /**
-     * @param Webhook              $requestDto
-     * @param CommandParserService $commandParser
-     * @param BotActionRegistry    $actionRegistry
-     * @param Api                  $tgApi
+     * @param Webhook               $requestDto
+     * @param CommandParserService  $commandParser
+     * @param BotActionRegistry     $actionRegistry
+     * @param Api                   $tgApi
      *
      * @return JsonResponse
      *
@@ -42,14 +42,12 @@ class WebhookController extends AbstractController
 
         $botCommand = $commandParser->parse($data->getMessage());
 
-        $response = $actionRegistry
-            ->get($botCommand->getCommand())
-            ->run($data);
+        $action = $actionRegistry->get($botCommand->getCommand());
 
         if (getenv('APP_ENV') === 'test') {
             $tgApi->getMe();
         } else {
-            $tgApi->sendMessage($response);
+            $tgApi->sendMessage($action->run($data));
         }
 
         return new JsonResponse(['ok' => true]);
