@@ -5,20 +5,28 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exception\TgAppExceptionInterface;
+use App\Service\TgBot\Api;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
+    private Api $api;
+
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger)
+    private RequestStack $requestStack;
+
+    public function __construct(Api $api, LoggerInterface $logger, RequestStack $requestStack)
     {
-        $this->logger = $logger;
+        $this->api          = $api;
+        $this->logger       = $logger;
+        $this->requestStack = $requestStack;
     }
 
     public static function getSubscribedEvents(): array

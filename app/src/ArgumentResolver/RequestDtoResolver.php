@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ArgumentResolver;
 
 use App\Dto\Request\RequestDtoInterface;
+use App\Service\Request\RequestDtoConverter;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -16,14 +17,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RequestDtoResolver implements ArgumentValueResolverInterface
 {
-    private LoggerInterface $logger;
+    private RequestDtoConverter $converter;
 
-    private ValidatorInterface $validator;
-
-    public function __construct(LoggerInterface $logger, ValidatorInterface $validator)
+    public function __construct(RequestDtoConverter $converter)
     {
-        $this->logger    = $logger;
-        $this->validator = $validator;
+        $this->converter = $converter;
     }
 
     /**
@@ -45,19 +43,6 @@ class RequestDtoResolver implements ArgumentValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $class = $argument->getType();
-        $dto   = new $class($request);
-
-        $this->logger->info(
-            '[REQUEST-CONTENT]',
-            ['content' => json_decode($request->getContent(), true)]
-        );
-
-        $errors = $this->validator->validate($dto);
-        if ($errors->count() > 0) {
-            throw new BadRequestHttpException((string)$errors, null, 400);
-        }
-
-        yield $dto;
+        yield $this->converter->convert($request, $argument->getType());;
     }
 }
