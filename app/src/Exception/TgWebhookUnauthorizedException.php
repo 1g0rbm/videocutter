@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exception;
 
-class TgWebhookUnauthorizedAbstractException extends TgProblemAbstractException
+class TgWebhookUnauthorizedException extends TgProblemAbstractException
 {
     public static function tokenNotFound(): TgAppExceptionInterface
     {

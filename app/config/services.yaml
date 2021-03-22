@@ -49,3 +49,7 @@ services:
     App\EventSubscriber\WebhookVerifyTokenSubscriber:
         tags:
             - { name: kernel.event_subscriber }
+
+    App\EventSubscriber\TgMessageCreatedSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }

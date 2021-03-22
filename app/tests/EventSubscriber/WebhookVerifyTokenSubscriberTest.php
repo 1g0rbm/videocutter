@@ -6,7 +6,7 @@ namespace App\Tests\EventSubscriber;
 
 use App\EventSubscriber\WebhookVerifyTokenSubscriber;
 use App\Exception\TgAppExceptionInterface;
-use App\Exception\TgWebhookUnauthorizedAbstractException;
+use App\Exception\TgWebhookUnauthorizedException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -57,7 +57,7 @@ class WebhookVerifyTokenSubscriberTest extends TestCase
                 ]
             );
 
-        self::expectException(TgWebhookUnauthorizedAbstractException::class);
+        self::expectException(TgWebhookUnauthorizedException::class);
         self::expectExceptionCode(401);
         self::expectExceptionMessage('[AUTH] Send wrong token wrong_token');
 
@@ -82,7 +82,7 @@ class WebhookVerifyTokenSubscriberTest extends TestCase
                 ]
             );
 
-        self::expectException(TgWebhookUnauthorizedAbstractException::class);
+        self::expectException(TgWebhookUnauthorizedException::class);
         self::expectExceptionCode(401);
         self::expectExceptionMessage('[AUTH] Token not found in webhook');
 

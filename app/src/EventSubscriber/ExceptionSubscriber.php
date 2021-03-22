@@ -4,36 +4,76 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Dto\Request\Webhook;
+use App\Entity\Message\Response;
+use App\Event\ResponseMessageCreated;
+use App\Exception\Dto\Request\WebhookRequestException;
 use App\Exception\TgAppExceptionInterface;
-use App\Service\TgBot\Api;
+use App\Exception\TgWebhookUnauthorizedException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-    private Api $api;
-
     private LoggerInterface $logger;
 
-    private RequestStack $requestStack;
+    private EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(Api $api, LoggerInterface $logger, RequestStack $requestStack)
-    {
-        $this->api          = $api;
-        $this->logger       = $logger;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        LoggerInterface $logger,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->logger          = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::EXCEPTION => 'onKernelException',
+            KernelEvents::EXCEPTION => [
+                ['onKernelException', 10],
+                ['onUnauthorizedException', 20],
+                ['onWebhookRequestException', 30],
+            ],
         ];
+    }
+
+    public function onWebhookRequestException(ExceptionEvent $event)
+    {
+        if (!$event->getThrowable() instanceof WebhookRequestException) {
+            return;
+        }
+
+        $this->logger->critical(
+            $event->getThrowable()->getMessage(),
+            ['content' => json_decode($event->getRequest()->getContent(), true)]
+        );
+
+        $response = new JsonResponse();
+        $response->setStatusCode(400);
+        $response->setContent('{"a": 1}');
+
+        $event->allowCustomResponseCode();
+        $event->setResponse($response);
+    }
+
+    public function onUnauthorizedException(ExceptionEvent $event): void
+    {
+        if (!$event->getThrowable() instanceof TgWebhookUnauthorizedException) {
+            return;
+        }
+
+        $this->logger->error(
+            $event->getThrowable()->getMessage(),
+            ['content' => json_decode($event->getRequest()->getContent(), true)]
+        );
+
+        $event->setResponse(new JsonResponse('{}', 401));
     }
 
     public function onKernelException(ExceptionEvent $event): void
@@ -45,28 +85,34 @@ class ExceptionSubscriber implements EventSubscriberInterface
             ['content' => json_decode($event->getRequest()->getContent(), true)]
         );
 
-        $response = self::createResponseFromThrowable($e);
-        $response->headers->set('Content-Type', 'application/problem+json');
+        try {
+            $dto = self::createWebhookDto($event);
 
-        $event->setResponse($response);
-    }
+            $response = new Response(
+                $dto->getMessageData()->getMessage()->getChat()->getId(),
+                'error'
+            );
 
-    private static function createResponseFromThrowable(Throwable $e): JsonResponse
-    {
-
-        if ($e instanceof TgAppExceptionInterface) {
-            return self::createResponseFromTgProblem($e);
+            $this->eventDispatcher->dispatch(
+                new ResponseMessageCreated($response),
+                ResponseMessageCreated::NAME
+            );
+        } catch (Throwable $e) {
+            $this->logger->critical($e->getMessage());
+            $event->setResponse(new JsonResponse('{}', 200));
+        } finally {
+            $event->setResponse(new JsonResponse('{}', 200));
         }
-
-        return new JsonResponse($e->getMessage(), 500);
     }
 
-
-    private static function createResponseFromTgProblem(TgAppExceptionInterface $e): JsonResponse
+    /**
+     * @param ExceptionEvent $event
+     *
+     * @return Webhook
+     * @throws TgAppExceptionInterface
+     */
+    private static function createWebhookDto(ExceptionEvent $event): Webhook
     {
-        return new JsonResponse(
-            $e->getTelegramProblem()->getMessage(),
-            $e->getTelegramProblem()->getHttpStatusCode()
-        );
+        return new Webhook($event->getRequest());
     }
 }

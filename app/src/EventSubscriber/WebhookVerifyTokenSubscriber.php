@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exception\TgAppExceptionInterface;
-use App\Exception\TgWebhookUnauthorizedAbstractException;
+use App\Exception\TgWebhookUnauthorizedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Routing\RouterInterface;
@@ -46,12 +46,12 @@ class WebhookVerifyTokenSubscriber implements EventSubscriberInterface
 
         $token = $parameters['token'] ?? null;
         if ($token === null) {
-            throw TgWebhookUnauthorizedAbstractException::tokenNotFound();
+            throw TgWebhookUnauthorizedException::tokenNotFound();
         }
 
         $originalToken = getenv('TG_WEBHOOK_TOKEN');
         if ($token !== $originalToken) {
-            throw TgWebhookUnauthorizedAbstractException::wrongToken($token);
+            throw TgWebhookUnauthorizedException::wrongToken($token);
         }
     }
 }
