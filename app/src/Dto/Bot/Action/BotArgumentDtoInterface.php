@@ -6,5 +6,4 @@ namespace App\Dto\Bot\Action;
 
 interface BotArgumentDtoInterface
 {
-    public function __construct(array $arguments);
 }

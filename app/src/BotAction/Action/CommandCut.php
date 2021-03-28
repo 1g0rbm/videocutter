@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\BotAction\Action;
 
 use App\BotAction\BotActionInterface;
+use App\Dto\Bot\Action\BotArgumentDtoInterface;
 use App\Dto\Bot\Action\CutDto;
 use App\Entity\Message\Data;
 use App\Entity\Message\Response;
@@ -36,7 +37,7 @@ class CommandCut implements BotActionInterface
     public function run(Data $data): Response
     {
         /** @var CutDto $arguments */
-        $arguments = $this->argumentParser->parse($data->getMessage(), get_class($this));
+        $cutDto = $this->argumentParser->parse($data->getMessage(), get_class($this));
 
         return new Response(
             $data->getMessage()->getChat()->getId(),

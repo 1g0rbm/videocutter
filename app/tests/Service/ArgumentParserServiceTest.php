@@ -9,6 +9,7 @@ use App\BotAction\Action\CommandStart;
 use App\Dto\Bot\Action\BotArgumentDtoInterface;
 use App\Dto\Bot\Action\NotFoundDto;
 use App\Entity\Message\Data;
+use App\Exception\Service\ArgumentParseException;
 use App\Exception\TgAppExceptionInterface;
 use App\Service\ActionDtoClassNameCreator;
 use App\Service\ArgumentParserService;
@@ -40,14 +41,19 @@ class ArgumentParserServiceTest extends TestCase
      * @throws TgAppExceptionInterface
      * @throws Exception
      */
-    public function testParseReturnNullIfThereAreNotArguments(): void
+    public function testParseCommandWithOneNullArgumentSuccess(): void
     {
         $service = new ArgumentParserService(new ActionDtoClassNameCreator());
 
-        $data    = Data::createFromArray(self::getWebhookCommandWithoutArguments());
+        $data    = Data::createFromArray(self::getWebhookCommandWithOneArgument());
         $command = new CommandNotFound();
 
-        self::assertNull($service->parse($data->getMessage(), get_class($command)));
+        /** @var NotFoundDto $dto */
+        $dto = $service->parse($data->getMessage(), get_class($command));
+
+        self::assertInstanceOf(BotArgumentDtoInterface::class, $dto);
+        self::assertEquals('arg1', $dto->getArg1());
+        self::assertNull($dto->getArg2());
     }
 
     /**
@@ -64,6 +70,21 @@ class ArgumentParserServiceTest extends TestCase
         self::assertNull($service->parse($data->getMessage(), get_class($command)));
     }
 
+    /**
+     * @throws Exception
+     * @throws TgAppExceptionInterface
+     */
+    public function testParseThrowExceptionIfDtoThrowInvalidArgumentException(): void
+    {
+        $service = new ArgumentParserService(new ActionDtoClassNameCreator());
+        $data    = Data::createFromArray(self::getWebhookCommandWithoutArguments());
+        $command = new CommandNotFound();
+
+        self::expectException(ArgumentParseException::class);
+
+        $service->parse($data->getMessage(), get_class($command));
+    }
+
     private static function getWebhookCommandWithoutArguments(): array
     {
         return json_decode(
@@ -76,6 +97,14 @@ class ArgumentParserServiceTest extends TestCase
     {
         return json_decode(
             file_get_contents(__DIR__ . '/../Webhook/data/valid_bot_command_with_arguments_message.json'),
+            true
+        );
+    }
+
+    private static function getWebhookCommandWithOneArgument(): array
+    {
+        return json_decode(
+            file_get_contents(__DIR__ . '/../Webhook/data/valid_bot_command_with_one_argument_message.json'),
             true
         );
     }
