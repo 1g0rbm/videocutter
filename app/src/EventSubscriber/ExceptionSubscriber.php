@@ -103,6 +103,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } finally {
             $event->setResponse(new JsonResponse('{}', 200));
         }
+        $event->allowCustomResponseCode();
     }
 
     /**

@@ -11,6 +11,7 @@ use App\Entity\Message\Data;
 use App\Entity\Message\Response;
 use App\Exception\TgAppExceptionInterface;
 use App\Service\ArgumentParserService;
+use ReflectionException;
 
 class CommandCut implements BotActionInterface
 {
@@ -32,7 +33,9 @@ class CommandCut implements BotActionInterface
      * @param Data $data
      *
      * @return Response
+     *
      * @throws TgAppExceptionInterface
+     * @throws ReflectionException
      */
     public function run(Data $data): Response
     {

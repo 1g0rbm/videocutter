@@ -4,17 +4,10 @@ declare(strict_types=1);
 
 namespace App\Dto\Bot\Action;
 
-use Webmozart\Assert\Assert;
-
 class CutDto implements BotArgumentDtoInterface
 {
-    public function __construct(array $arguments)
+    public function __construct(string $url, string $timeCodeStart, string $timeCodeStop)
     {
-        Assert::count($arguments, 3);
-        Assert::string($url = $arguments[0]);
-        Assert::string($timeCodeStart = $arguments[1]);
-        Assert::string($timeCodeStop = $arguments[2]);
-
         $this->url           = $url;
         $this->timeCodeStart = $timeCodeStart;
         $this->timeCodeStop  = $timeCodeStop;
