@@ -9,6 +9,7 @@
     "ext-iconv": "*",
     "ext-json": "*",
     "eightpoints/guzzle-bundle": "^8.2",
+    "norkunas/youtube-dl-php": "^2.0",
     "sensio/framework-extra-bundle": "^6.1",
     "symfony/console": "5.2.*",
     "symfony/dotenv": "5.2.*",
