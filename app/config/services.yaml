@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    save-video-path: '%kernel.project_dir%/var/video'
 
 services:
     # default configuration for services in *this* file
@@ -53,3 +54,11 @@ services:
     App\EventSubscriber\TgMessageCreatedSubscriber:
         tags:
             - { name: kernel.event_subscriber }
+
+
+    YoutubeDl\YoutubeDl:
+
+    App\Service\Video\YoutubeDownloader:
+        arguments:
+            $youtubeDl: '@YoutubeDl\YoutubeDl'
+            $path: '%save-video-path%'

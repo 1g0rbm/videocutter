@@ -1,6 +1,6 @@
 FROM php:7.4-fpm-alpine
 
-RUN apk update && apk add autoconf g++ make \
+RUN apk update && apk add autoconf g++ make youtube-dl \
     && wget http://xdebug.org/files/xdebug-3.0.2.tgz \
     && tar -xzvf xdebug-3.0.2.tgz \
     && cd xdebug-3.0.2 \

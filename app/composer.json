@@ -1,4 +1,6 @@
 {
+  "name": "1g0rbm/videocutter",
+  "description": "Cut youtube video",
   "type": "project",
   "license": "proprietary",
   "minimum-stability": "dev",

@@ -6,18 +6,18 @@ namespace App\Dto\Bot\Action;
 
 class CutDto implements BotArgumentDtoInterface
 {
-    public function __construct(string $url, string $timeCodeStart, string $timeCodeStop)
+    private string $url;
+
+    private ?string $timeCodeStart;
+
+    private ?string $timeCodeStop;
+
+    public function __construct(string $url, ?string $timeCodeStart, ?string $timeCodeStop)
     {
         $this->url           = $url;
         $this->timeCodeStart = $timeCodeStart;
         $this->timeCodeStop  = $timeCodeStop;
     }
-
-    private string $url;
-
-    private string $timeCodeStart;
-
-    private string $timeCodeStop;
 
     public function getUrl(): string
     {
